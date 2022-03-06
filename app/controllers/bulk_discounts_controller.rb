@@ -7,7 +7,7 @@ class BulkDiscountsController < ApplicationController
     end
   end
 
-  def show
-
+  def show 
+    @bulk_discount = BulkDiscount.find(params[:id])
   end
 end
