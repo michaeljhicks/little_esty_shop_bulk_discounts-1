@@ -9,9 +9,9 @@ InvoiceItem.destroy_all
 merchant_1 = Merchant.create!(name: 'Hair Care')
 merchant_2 = Merchant.create!(name: 'Hayleys Comcics')
 
-merchant_1.bulk_discounts.create!(markdown: 10, quantity_threshold: 10)
-merchant_1.bulk_discounts.create!(markdown: 20, quantity_threshold: 20)
-merchant_2.bulk_discounts.create!(markdown: 30, quantity_threshold: 30)
+merchant_1.bulk_discounts.create!(markdown: 10, threshold: 10)
+merchant_1.bulk_discounts.create!(markdown: 20, threshold: 20)
+merchant_2.bulk_discounts.create!(markdown: 30, threshold: 30)
 
 customer_1 = Customer.create!(first_name: 'Joey', last_name: 'Smith')
 customer_2 = Customer.create!(first_name: 'Cecilia', last_name: 'Jones')
