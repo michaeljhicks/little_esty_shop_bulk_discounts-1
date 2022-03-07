@@ -28,7 +28,7 @@ invoice_5 = Invoice.create!(customer_id: customer_4.id, status: 2)
 invoice_6 = Invoice.create!(customer_id: customer_5.id, status: 2)
 invoice_7 = Invoice.create!(customer_id: customer_6.id, status: 1)
 
-item_1 = Item.create!(name: "Shampoo", description: "This wahes your hair", unit_price: 10, merchant_id: merchant_1.id)
+item_1 = Item.create!(name: "Shampoo", description: "This washes your hair", unit_price: 10, merchant_id: merchant_1.id)
 item_2 = Item.create!(name: "Conditioner", description: "This makes your hair shiny", unit_price: 20, merchant_id: merchant_1.id)
 item_3 = Item.create!(name: "Brush", description: "This takes out tangles", unit_price: 30, merchant_id: merchant_1.id)
 item_4 = Item.create!(name: "Hair tie", description: "This holds up your hair", unit_price: 40, merchant_id: merchant_1.id)
