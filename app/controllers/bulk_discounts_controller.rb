@@ -1,13 +1,10 @@
 class BulkDiscountsController < ApplicationController
   def index
-    if params[:merchant_id].present?
-      @bulk_discounts = BulkDiscount.where(merchant_id: params[:merchant_id])
-    else
-      @bulk_discounts = BulkDiscount.all
-    end
+    @merchant = Merchant.find(params[:merchant_id])
+    @holidays = BulkDiscountsFacade.holiday_info
   end
 
-  def show 
+  def show
     @bulk_discount = BulkDiscount.find(params[:id])
   end
 end
