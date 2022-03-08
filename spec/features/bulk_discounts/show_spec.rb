@@ -44,7 +44,7 @@ RSpec.describe 'bulk discounts Show page' do
   let!(:transaction6) {invoice_7.transactions.create!(credit_card_number: 879799, result: 1)}
   let!(:transaction7) {invoice_2.transactions.create!(credit_card_number: 203942, result: 1)}
 
-  describe 'User Story #4' do
+  describe 'User Story #5' do
     it 'displays the ID of a single bulk discount' do
       visit merchant_bulk_discount_path(merchant_1, bulk_discount_1)
 
