@@ -62,7 +62,6 @@ RSpec.describe 'bulk discounts new page' do
     fill_in :markdown, with: "Yummy"
     fill_in :threshold, with: "Pizza"
     click_button "Submit"
-    save_and_open_page
 
     expect(current_path).to eq(new_merchant_bulk_discount_path(merchant_1))
     expect(page).to have_content("Markdown is not a number, Threshold is not a number. Please Try Again")
