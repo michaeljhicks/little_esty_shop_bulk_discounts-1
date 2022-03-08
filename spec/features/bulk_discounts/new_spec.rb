@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'bulk discounts index page' do
+RSpec.describe 'bulk discounts new page' do
   let!(:merchant_1) {Merchant.create!(name: 'Hair Care')}
   let!(:merchant_2) {Merchant.create!(name: 'Hayleys Comcics')}
 
@@ -44,68 +44,38 @@ RSpec.describe 'bulk discounts index page' do
   let!(:transaction6) {invoice_7.transactions.create!(credit_card_number: 879799, result: 1)}
   let!(:transaction7) {invoice_2.transactions.create!(credit_card_number: 203942, result: 1)}
 
-  it 'shows all the bulk discounts ids that belong to a merchant' do # user story-1
-    visit merchant_bulk_discounts_path(merchant_1)
+  it 'fills in the form to create a new bulk discount' do #user story 3
+    visit new_merchant_bulk_discount_path(merchant_1)
 
-    within "#discount_id-#{bulk_discount_1.id}" do
-      expect(page).to have_content(bulk_discount_1.id)
-      expect(page).to_not have_content(bulk_discount_2.id)
+    fill_in :markdown, with: 100
+    fill_in :threshold, with: 100
+    click_button "Submit"
 
-      expect(page).to_not have_content(bulk_discount_3.id)
-    end
-
-    within "#discount_id-#{bulk_discount_2.id}" do
-      expect(page).to_not have_content(bulk_discount_1.id)
-      expect(page).to have_content(bulk_discount_2.id)
-
-      expect(page).to_not have_content(bulk_discount_3.id)
-    end
+    expect(current_path).to eq(merchant_bulk_discounts_path(merchant_1))
+    expect(page).to have_content("Markdown: 100")
+    expect(page).to have_content("Threshold: 100")
   end
 
-  it 'shows all of the bulk discounts percentages that belong to a merchant' do # user story 1
-    visit merchant_bulk_discounts_path(merchant_1)
+  it 'fills in the form with invalid data and returns errors' do # user story 3
+    visit new_merchant_bulk_discount_path(merchant_1)
 
-    expect(page).to have_content(bulk_discount_1.markdown)
-    expect(page).to have_content(bulk_discount_2.markdown)
-    # expect(page).to_not have_content(bulk_discount_3.markdown)
-  end
-
-  it 'shows all of the bulk discounts thresholds that belong to a merchant' do # user story 1
-     visit merchant_bulk_discounts_path(merchant_1)
-
-     expect(page).to have_content(bulk_discount_1.threshold)
-     expect(page).to have_content(bulk_discount_2.threshold)
-     # expect(page).to_not have_content(bulk_discount_3.threshold)
-
-  end
-
-  it 'clicks the bulk discount id link taking merchant to respective bulk discounts show page' do # user story 1
-    visit merchant_bulk_discounts_path(merchant_1)
-
-    click_link "#{bulk_discount_1.id}"
-
-    expect(current_path).to eq(merchant_bulk_discount_path(merchant_1, bulk_discount_1))
-  end
-
-  it 'displays the the three upcoming holidays' do # user story 2
-    visit merchant_bulk_discounts_path(merchant_1)
-
-    within "#holidays" do
-      expect(page).to have_content("Good Friday")
-      expect(page).to have_content("2022-04-15")
-      expect(page).to have_content("Memorial Day")
-      expect(page).to have_content("2022-05-30")
-      expect(page).to have_content("Juneteenth")
-      expect(page).to have_content("2022-06-20")
-    end
-  end
-
-  it 'shows and allows to click a link to create a new bulk discount for the current merchant' do # user story 3
-    visit merchant_bulk_discounts_path(merchant_1)
-
-    click_link "Create Discount"
+    fill_in :markdown, with: "Yummy"
+    fill_in :threshold, with: "Pizza"
+    click_button "Submit"
 
     expect(current_path).to eq(new_merchant_bulk_discount_path(merchant_1))
+    expect(page).to have_content("Markdown is not a number, Threshold is not a number. Please Try Again")
+  end
+
+  it 'submits a blank form and returns errors' do # user story 3
+    visit new_merchant_bulk_discount_path(merchant_1)
+
+    fill_in :markdown, with: ""
+    fill_in :threshold, with: ""
+    click_button "Submit"
+
+    expect(current_path).to eq(new_merchant_bulk_discount_path(merchant_1))
+    expect(page).to have_content("Markdown can't be blank, Markdown is not a number, Threshold can't be blank, Threshold is not a number. Please Try Again")
   end
 
 end
