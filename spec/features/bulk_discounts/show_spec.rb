@@ -77,8 +77,16 @@ RSpec.describe 'bulk discounts Show page' do
         expect(page).to_not have_content(bulk_discount_3.threshold)
       end
     end
+  end
 
+  describe 'User Story #6' do
+    it "has a link - click link to edit the bulk discount" do
+      visit merchant_bulk_discount_path(merchant_1, bulk_discount_1)
 
+      click_link "Edit Bulk Discount #{bulk_discount_1.id}"
+
+      expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
+    end
   end
 
 end
