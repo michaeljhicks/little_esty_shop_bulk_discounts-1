@@ -44,38 +44,40 @@ RSpec.describe 'bulk discounts new page' do
   let!(:transaction6) {invoice_7.transactions.create!(credit_card_number: 879799, result: 1)}
   let!(:transaction7) {invoice_2.transactions.create!(credit_card_number: 203942, result: 1)}
 
-  it 'fills in the form to create a new bulk discount' do #user story 3
-    visit new_merchant_bulk_discount_path(merchant_1)
+  describe 'User Story #3' do
+    it 'fills in the form to create a new bulk discount' do #user story 3
+      visit new_merchant_bulk_discount_path(merchant_1)
 
-    fill_in :markdown, with: 100
-    fill_in :threshold, with: 100
-    click_button "Submit"
+      fill_in :markdown, with: 100
+      fill_in :threshold, with: 100
+      click_button "Submit"
 
-    expect(current_path).to eq(merchant_bulk_discounts_path(merchant_1))
-    expect(page).to have_content("Markdown: 100")
-    expect(page).to have_content("Threshold: 100")
-  end
+      expect(current_path).to eq(merchant_bulk_discounts_path(merchant_1))
+      expect(page).to have_content("Markdown: 100")
+      expect(page).to have_content("Threshold: 100")
+    end
 
-  it 'fills in the form with invalid data and returns errors' do # user story 3
-    visit new_merchant_bulk_discount_path(merchant_1)
+    it 'fills in the form with invalid data and returns errors' do # user story 3
+      visit new_merchant_bulk_discount_path(merchant_1)
 
-    fill_in :markdown, with: "Yummy"
-    fill_in :threshold, with: "Pizza"
-    click_button "Submit"
+      fill_in :markdown, with: "Yummy"
+      fill_in :threshold, with: "Pizza"
+      click_button "Submit"
 
-    expect(current_path).to eq(new_merchant_bulk_discount_path(merchant_1))
-    expect(page).to have_content("Markdown is not a number, Threshold is not a number. Please Try Again")
-  end
+      expect(current_path).to eq(new_merchant_bulk_discount_path(merchant_1))
+      expect(page).to have_content("Markdown is not a number, Threshold is not a number. Please Try Again")
+    end
 
-  it 'submits a blank form and returns errors' do # user story 3
-    visit new_merchant_bulk_discount_path(merchant_1)
+    it 'submits a blank form and returns errors' do # user story 3
+      visit new_merchant_bulk_discount_path(merchant_1)
 
-    fill_in :markdown, with: ""
-    fill_in :threshold, with: ""
-    click_button "Submit"
+      fill_in :markdown, with: ""
+      fill_in :threshold, with: ""
+      click_button "Submit"
 
-    expect(current_path).to eq(new_merchant_bulk_discount_path(merchant_1))
-    expect(page).to have_content("Markdown can't be blank, Markdown is not a number, Threshold can't be blank, Threshold is not a number. Please Try Again")
+      expect(current_path).to eq(new_merchant_bulk_discount_path(merchant_1))
+      expect(page).to have_content("Markdown can't be blank, Markdown is not a number, Threshold can't be blank, Threshold is not a number. Please Try Again")
+    end
   end
 
 end
