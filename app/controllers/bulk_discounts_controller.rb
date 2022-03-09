@@ -1,7 +1,7 @@
 class BulkDiscountsController < ApplicationController
   def index
     @merchant = Merchant.find(params[:merchant_id])
-    @holidays = BulkDiscountsFacade.holiday_info
+    @holidays = HolidayFacade.country_holidays("US") #not specified as params passed
   end
 
   def show
