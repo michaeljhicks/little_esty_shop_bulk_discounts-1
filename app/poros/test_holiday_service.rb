@@ -1,6 +1,6 @@
 require 'httparty'
 
-class HolidayService
+class TestHolidayService
   def united_states
     get_url("/US")
   end

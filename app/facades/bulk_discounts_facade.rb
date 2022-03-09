@@ -1,5 +1,5 @@
 class BulkDiscountsFacade
-  def self.merchant(id)
+  def self.merchant(id) #maybe remove?
     Merchant.find(id)
   end
 
