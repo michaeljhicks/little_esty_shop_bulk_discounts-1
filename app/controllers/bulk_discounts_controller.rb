@@ -1,7 +1,7 @@
 class BulkDiscountsController < ApplicationController
   def index
     @merchant = Merchant.find(params[:merchant_id])
-    @holidays = BulkDiscountsFacade.holiday_info
+    @holidays = HolidayFacade.country_holidays("US") #not specified as params passed
   end
 
   def show
@@ -29,6 +29,25 @@ class BulkDiscountsController < ApplicationController
     BulkDiscount.find_by(discount_params).destroy
 
     redirect_to merchant_bulk_discounts_path(params[:merchant_id])
+  end
+
+  def edit
+    @bulk_discount = BulkDiscount.find(params[:id])
+  end
+
+  def update
+    discount = BulkDiscount.find_by(id: params[:id], merchant_id: params[:merchant_id])
+    discount.update(discount_params)
+
+    if discount.valid?
+      discount.save
+      redirect_to merchant_bulk_discount_path(discount.merchant_id, discount), notice: "Successfully Updated Bulk Discount #{discount.id}"
+    else
+      respond_to do |format|
+        format.html {redirect_to request.referrer}
+      end
+      flash[:alert] = discount.errors.full_messages.join(", ") + ". Please Try Again"
+    end
   end
 
   private

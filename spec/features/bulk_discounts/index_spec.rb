@@ -1,6 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe 'bulk discounts index page' do
+  let!(:holidays) {HolidayFacade.country_holidays("US")}
   let!(:merchant_1) {Merchant.create!(name: 'Hair Care')}
   let!(:merchant_2) {Merchant.create!(name: 'Hayleys Comcics')}
 
@@ -94,12 +95,12 @@ RSpec.describe 'bulk discounts index page' do
       visit merchant_bulk_discounts_path(merchant_1)
 
       within "#holidays" do
-        expect(page).to have_content("Good Friday")
-        expect(page).to have_content("2022-04-15")
-        expect(page).to have_content("Memorial Day")
-        expect(page).to have_content("2022-05-30")
-        expect(page).to have_content("Juneteenth")
-        expect(page).to have_content("2022-06-20")
+        expect(page).to have_content(holidays[0].name)
+        expect(page).to have_content(holidays[0].date)
+        expect(page).to have_content(holidays[1].name)
+        expect(page).to have_content(holidays[1].date)
+        expect(page).to have_content(holidays[2].name)
+        expect(page).to have_content(holidays[2].date)
       end
     end
   end
