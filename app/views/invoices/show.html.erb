@@ -20,7 +20,10 @@
   <br>
 
   <p> Created on: <%= @invoice.created_at.strftime("%A, %B %-d, %Y") %></p>
+<div id="revenue">
   <p>Total Revenue: <%= @invoice.total_revenue %></p>
+  <p>Total Discounted Revenue: <%= @invoice.total_discounted_revenue %></p>
+</div>
 
 
   <h4>Customer:</h4>
@@ -42,6 +45,18 @@
       <% @invoice.invoice_items.each do |i| %>
         <section id="the-status-<%= i.id %>">
           <tr class="tr">
+
+          <div id="discounts_link-<%= i.item.name %>">
+            <% if i.item.minimum_availible_discount(i.item) == nil %>
+              <td style="text-align:center"><%= i.item.name %></td>
+            <% elsif i.item.minimum_availible_discount(i.item) > i.quantity %>
+              <td style="text-align:center"><%= i.item.name %></td>
+            <% else %>
+              <td style="text-align:center"><%= i.item.name %> <%= link_to "Applied Discounts", merchant_bulk_discount_path(i.item.merchant_id, i.item.maximum_availible_discount(i.item)), method: :get %></td>
+            <% end %>
+          </div>
+
+
             <td style="text-align:center"><%= i.item.name %></td>
             <td style="text-align:center"><%= i.quantity %></td>
             <td style="text-align:center">$<%= i.unit_price %></td>
