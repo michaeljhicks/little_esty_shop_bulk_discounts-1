@@ -44,147 +44,149 @@ RSpec.describe 'bulk discounts edit page' do
   let!(:transaction6) {invoice_7.transactions.create!(credit_card_number: 879799, result: 1)}
   let!(:transaction7) {invoice_2.transactions.create!(credit_card_number: 203942, result: 1)}
 
-  it 'shows a form that can be filled in correctly to update the bulk discount' do
-    visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
+  describe 'User Story #6' do 
+    it 'shows a form that can be filled in correctly to update the bulk discount' do
+      visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
 
-    expect(page).to have_content(bulk_discount_1.id)
-    expect(page).to have_field( :markdown, placeholder: "10")
-    expect(page).to have_field( :threshold, placeholder: "10")
-
-    fill_in :markdown, with: 75
-    fill_in :threshold, with: 75
-    click_button "Submit"
-
-    expect(current_path).to eq(merchant_bulk_discount_path(merchant_1, bulk_discount_1))
-    expect(page).to have_content("Successfully Updated Bulk Discount #{bulk_discount_1.id}")
-
-    within "#discount_id" do
       expect(page).to have_content(bulk_discount_1.id)
+      expect(page).to have_field( :markdown, placeholder: "10")
+      expect(page).to have_field( :threshold, placeholder: "10")
 
-      expect(page).to_not have_content(bulk_discount_2.id)
-      expect(page).to_not have_content(bulk_discount_3.id)
+      fill_in :markdown, with: 75
+      fill_in :threshold, with: 75
+      click_button "Submit"
+
+      expect(current_path).to eq(merchant_bulk_discount_path(merchant_1, bulk_discount_1))
+      expect(page).to have_content("Successfully Updated Bulk Discount #{bulk_discount_1.id}")
+
+      within "#discount_id" do
+        expect(page).to have_content(bulk_discount_1.id)
+
+        expect(page).to_not have_content(bulk_discount_2.id)
+        expect(page).to_not have_content(bulk_discount_3.id)
+      end
+
+      within "#markdown" do
+        expect(page).to have_content("Bulk Discount Markdown: 75")
+
+        expect(page).to_not have_content(10)
+        expect(page).to_not have_content(bulk_discount_2.markdown)
+        expect(page).to_not have_content(bulk_discount_3.markdown)
+      end
+
+      within "#threshold" do
+        expect(page).to have_content("Bulk Discount Quantity Threshold: 75")
+
+        expect(page).to_not have_content(10)
+        expect(page).to_not have_content(bulk_discount_2.threshold)
+        expect(page).to_not have_content(bulk_discount_3.threshold)
+      end
     end
 
-    within "#markdown" do
-      expect(page).to have_content("Bulk Discount Markdown: 75")
+    it 'shows an error when markdown filled with integer that is too high' do
+      visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
 
-      expect(page).to_not have_content(10)
-      expect(page).to_not have_content(bulk_discount_2.markdown)
-      expect(page).to_not have_content(bulk_discount_3.markdown)
+      expect(page).to have_content(bulk_discount_1.id)
+      expect(page).to have_field( :markdown, placeholder: "10")
+      expect(page).to have_field( :threshold, placeholder: "10")
+
+      fill_in :markdown, with: 200
+      fill_in :threshold, with: 75
+      click_button "Submit"
+
+      expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
+      expect(page).to have_content("Markdown must be less than or equal to 100. Please Try Again")
     end
 
-    within "#threshold" do
-      expect(page).to have_content("Bulk Discount Quantity Threshold: 75")
+    it 'shows an error when markdown filled in with integer that is too low' do
+      visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
 
-      expect(page).to_not have_content(10)
-      expect(page).to_not have_content(bulk_discount_2.threshold)
-      expect(page).to_not have_content(bulk_discount_3.threshold)
+      expect(page).to have_content(bulk_discount_1.id)
+      expect(page).to have_field( :markdown, placeholder: "10")
+      expect(page).to have_field( :threshold, placeholder: "10")
+
+      fill_in :markdown, with: 0
+      fill_in :threshold, with: 75
+      click_button "Submit"
+
+      expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
+      expect(page).to have_content("Markdown must be greater than or equal to 1. Please Try Again")
     end
-  end
 
-  it 'shows an error when markdown filled with integer that is too high' do
-    visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
+    it 'shows an error when markdown is left blank' do
+      visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
 
-    expect(page).to have_content(bulk_discount_1.id)
-    expect(page).to have_field( :markdown, placeholder: "10")
-    expect(page).to have_field( :threshold, placeholder: "10")
+      expect(page).to have_content(bulk_discount_1.id)
+      expect(page).to have_field( :markdown, placeholder: "10")
+      expect(page).to have_field( :threshold, placeholder: "10")
 
-    fill_in :markdown, with: 200
-    fill_in :threshold, with: 75
-    click_button "Submit"
+      fill_in :markdown, with: nil
+      fill_in :threshold, with: 75
+      click_button "Submit"
 
-    expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
-    expect(page).to have_content("Markdown must be less than or equal to 100. Please Try Again")
-  end
+      expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
+      expect(page).to have_content("Markdown can't be blank, Markdown is not a number. Please Try Again")
+    end
 
-  it 'shows an error when markdown filled in with integer that is too low' do
-    visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
+    it 'shows an error when markdown filled in with invalid data type' do
+      visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
 
-    expect(page).to have_content(bulk_discount_1.id)
-    expect(page).to have_field( :markdown, placeholder: "10")
-    expect(page).to have_field( :threshold, placeholder: "10")
+      expect(page).to have_content(bulk_discount_1.id)
+      expect(page).to have_field( :markdown, placeholder: "10")
+      expect(page).to have_field( :threshold, placeholder: "10")
 
-    fill_in :markdown, with: 0
-    fill_in :threshold, with: 75
-    click_button "Submit"
+      fill_in :markdown, with: "ABC"
+      fill_in :threshold, with: 75
+      click_button "Submit"
 
-    expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
-    expect(page).to have_content("Markdown must be greater than or equal to 1. Please Try Again")
-  end
+      expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
+      expect(page).to have_content("Markdown is not a number. Please Try Again")
+    end
 
-  it 'shows an error when markdown is left blank' do
-    visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
+    it 'shows an error when quantity is filled in with too low of a number' do
+      visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
 
-    expect(page).to have_content(bulk_discount_1.id)
-    expect(page).to have_field( :markdown, placeholder: "10")
-    expect(page).to have_field( :threshold, placeholder: "10")
+      expect(page).to have_content(bulk_discount_1.id)
+      expect(page).to have_field( :markdown, placeholder: "10")
+      expect(page).to have_field( :threshold, placeholder: "10")
 
-    fill_in :markdown, with: nil
-    fill_in :threshold, with: 75
-    click_button "Submit"
+      fill_in :markdown, with: 20
+      fill_in :threshold, with: -1
+      click_button "Submit"
 
-    expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
-    expect(page).to have_content("Markdown can't be blank, Markdown is not a number. Please Try Again")
-  end
+      expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
+      expect(page).to have_content("Threshold must be greater than or equal to 0. Please Try Again")
+    end
 
-  it 'shows an error when markdown filled in with invalid data type' do
-    visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
+    it 'shows an error when quantity is left blank' do
+      visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
 
-    expect(page).to have_content(bulk_discount_1.id)
-    expect(page).to have_field( :markdown, placeholder: "10")
-    expect(page).to have_field( :threshold, placeholder: "10")
+      expect(page).to have_content(bulk_discount_1.id)
+      expect(page).to have_field( :markdown, placeholder: "10")
+      expect(page).to have_field( :threshold, placeholder: "10")
 
-    fill_in :markdown, with: "ABC"
-    fill_in :threshold, with: 75
-    click_button "Submit"
+      fill_in :markdown, with: 20
+      fill_in :threshold, with: nil
+      click_button "Submit"
 
-    expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
-    expect(page).to have_content("Markdown is not a number. Please Try Again")
-  end
+      expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
+      expect(page).to have_content("Threshold can't be blank, Threshold is not a number. Please Try Again")
+    end
 
-  it 'shows an error when quantity is filled in with too low of a number' do
-    visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
+    it 'shows an error when quantity is filled in wtih invalid data type' do
+      visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
 
-    expect(page).to have_content(bulk_discount_1.id)
-    expect(page).to have_field( :markdown, placeholder: "10")
-    expect(page).to have_field( :threshold, placeholder: "10")
+      expect(page).to have_content(bulk_discount_1.id)
+      expect(page).to have_field( :markdown, placeholder: "10")
+      expect(page).to have_field( :threshold, placeholder: "10")
 
-    fill_in :markdown, with: 20
-    fill_in :threshold, with: -1
-    click_button "Submit"
+      fill_in :markdown, with: 20
+      fill_in :threshold, with: "ABC"
+      click_button "Submit"
 
-    expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
-    expect(page).to have_content("Threshold must be greater than or equal to 0. Please Try Again")
-  end
-
-  it 'shows an error when quantity is left blank' do
-    visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
-
-    expect(page).to have_content(bulk_discount_1.id)
-    expect(page).to have_field( :markdown, placeholder: "10")
-    expect(page).to have_field( :threshold, placeholder: "10")
-
-    fill_in :markdown, with: 20
-    fill_in :threshold, with: nil
-    click_button "Submit"
-
-    expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
-    expect(page).to have_content("Threshold can't be blank, Threshold is not a number. Please Try Again")
-  end
-
-  it 'shows an error when quantity is filled in wtih invalid data type' do
-    visit edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1)
-
-    expect(page).to have_content(bulk_discount_1.id)
-    expect(page).to have_field( :markdown, placeholder: "10")
-    expect(page).to have_field( :threshold, placeholder: "10")
-
-    fill_in :markdown, with: 20
-    fill_in :threshold, with: "ABC"
-    click_button "Submit"
-
-    expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
-    expect(page).to have_content("Threshold is not a number. Please Try Again")
+      expect(current_path).to eq(edit_merchant_bulk_discount_path(merchant_1, bulk_discount_1))
+      expect(page).to have_content("Threshold is not a number. Please Try Again")
+    end
   end
 
 
